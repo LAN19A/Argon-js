@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>抖音授权</title>
+    <style>
+        html,body,div{margin:0;padding:0;border:0;}
+    </style>
+    <script src="./js/jquery-2.1.4.min.js"></script>
+    <script src="./project/js/dx_config.js"></script>
+</head>
+<body>
+<div id="showSuccess" style="display:none;text-align: center;margin-top:20%;color:#67C23A;font-size:18px;">您已完成抖音账户授权，<span id="second"></span>秒钟后将关闭此页面。</div>
+<script>
+    var cookieName = '_dx_merchant_dy_auth_';
+
+    // 本地存储- 存储  并设置过期分钟
+    // 目前存储做全覆盖存储
+    function setCookie(cookieName, data, minutes) {
+        var cookieData = {
+            data: data
+        };
+        removeCookie(cookieName);
+        if (!!minutes) {
+            cookieData.endTime = (new Date()).getTime() + minutes * 60 * 1000;
+        }
+        //console.log('setCookie',cookieName,cookieData,JSON.stringify(cookieData));
+        window.localStorage.setItem(cookieName, JSON.stringify(cookieData));
+    }
+
+    // 本地存储- 获取
+    function getCookie(cookieName) {
+        // 传入的cookieName必须存在
+        //console.log('in getCookie',cookieName)
+        if (!(typeof cookieName == 'string' || typeof cookieName == 'number')) return null;
+        var _ls = JSON.parse(window.localStorage.getItem(cookieName)||null);
+        //console.log('getCookie',cookieName,_ls)
+        if (_ls != null) { // 存在指定的本地存储
+            var _ls_data = _ls.data; //  存储的实际内容
+            var nowTime = (new Date()).getTime();
+            var endTime = parseInt(_ls.endTime||0) ||  (parseInt(_ls.beginTime||0) + parseInt(_ls.effectiveMin||0) * 60 * 1000) || 0;
+            if (!!endTime) {  // 存储内容存在开始时间和有效时长
+                if (nowTime > endTime) {
+                    removeCookie(cookieName); // 存储超期，直接删除
+                    return null;
+                } else {
+                    return _ls_data;
+                }
+            } else {
+                return _ls_data;
+            }
+        }
+        return null;
+    }
+
+    // 本地存储- 获取
+    function removeCookie(cookieName) {
+        window.localStorage.removeItem(cookieName);
+    }
+
+    function getUrlParams(key) {
+        const url = new URL(window.location.href);
+        const searchParams = new URLSearchParams(url.search);
+        return searchParams.get(key);
+    }
+
+    function getUserInfo(access_token,open_id,callbackFn){
+        var dxToken = getCookie('_lj_merchant_user').token;
+        $.ajax({
+            type: 'POST',
+            url: DxConfig.api.base+'douyin/web/getUserInfo/',
+            data:JSON.stringify({
+                "token": access_token,
+                "openId": open_id
+            }),
+            headers:{
+                "token":dxToken,
+                "Content-Type":"application/json;charset=UTF-8"
+            },
+            dataType:'json',
+            success: function (res) {
+                callbackFn && callbackFn(res.data)
+            }
+        })
+    }
+
+    $(function(){
+        // var token = getUrlParams('token');
+        // var openId = getUrlParams('openId');
+        $('#showSuccess').show();
+        var time = 4;
+        var isClose = false;
+        var showTime = setInterval(function(){
+            if(time>0){
+                time--;
+                isClose = true;
+            }else{
+                clearInterval(showTime);
+                window.close();
+            }
+            $('#second').html(time);
+        },1000);
+        // getUserInfo(token,openId,function (userRes) {
+        //     var avatar = userRes.data.avatar;
+        //     var nickname = userRes.data.nickname;
+        //     var cookieData = getCookie(cookieName)||[];
+        //     var isOldUser = false;
+        //     if(cookieData.length>0){
+        //         cookieData.forEach((d,i)=>{
+        //             if(d.open_id === openId){
+        //                 isOldUser = true;
+        //                 cookieData[i] = {
+        //                     access_token:token,
+        //                     open_id:openId,
+        //                     avatar:avatar,
+        //                     nickname:nickname
+        //                 };
+        //             }
+        //         });
+        //         if(!isOldUser){
+        //             cookieData.push({
+        //                 access_token:token,
+        //                 open_id:openId,
+        //                 avatar:avatar,
+        //                 nickname:nickname
+        //             })
+        //         }
+        //     }else{
+        //         cookieData = [{
+        //             access_token:token,
+        //             open_id:openId,
+        //             avatar:avatar,
+        //             nickname:nickname
+        //         }]
+        //     }
+        //     setCookie(cookieName,cookieData);
+        //     var closeTime = setInterval(function () {
+        //         if(isClose){
+        //             isClose = false;
+        //             clearInterval(closeTime);
+        //             window.close();
+        //         }
+        //     },1000)
+        // });
+    })
+</script>
+</body>
+</html>

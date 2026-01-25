@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+    <title>富文本编辑器可视化</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        html,body{
+            width:100%;
+            height:100%;
+            overflow: hidden;
+            background: transparent;
+        }
+        .dx-content{
+            position: absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+            -webkit-transform-origin:top left;
+            transform-origin:top left;
+        }
+    </style>
+    <link rel="stylesheet" href="./css/quill.core.css"/>
+    <link rel="stylesheet" href="./css/quill.snow.css"/>
+    <link rel="stylesheet" href="./css/quill.bubble.css"/>
+</head>
+<body>
+<div id="content" class="dx-content">
+    <div id="ql_editor" class="ql-editor">
+
+    </div>
+</div>
+
+<script>
+    var url = window.location.href;
+    var content = url.split('content=')[1];
+    var zoom = parseFloat(url.split('?scale=')[1].split('&content=')[0]);
+    var $content = document.getElementById('content');
+    console.log('zoom',zoom)
+    $content.style['-webkit-transform'] = 'scale('+zoom+')';
+    $content.style['transform'] = 'scale('+zoom+')';
+    $content.style['width'] = (document.body.clientWidth / zoom) +'px';
+    $content.style['height'] = (document.body.clientHeight / zoom) +'px';
+    document.getElementById('ql_editor').innerHTML = decodeURIComponent(content);
+</script>
+</body>
+</html>

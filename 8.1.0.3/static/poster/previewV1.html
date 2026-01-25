@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>点秀.海报</title>
+    <script type="text/javascript">
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)) {
+            <!-- 需要在页面加载时候 生效 才能有效 -->
+            var devicePixelRatio = window.devicePixelRatio;
+            var deviceScale = 1 / devicePixelRatio;
+            document.write('<meta name="viewport" content="width=device-width,initial-scale=' + deviceScale + ',minimum-scale=' + deviceScale + ',maximum-scale=' + deviceScale + ',user-scalable=no">');
+        }
+    </script>
+    <link rel="stylesheet" href="./css/main.css"/>
+    <link rel="stylesheet" href="./css/animate.css"/>
+    <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../project/js/dx_config.js"></script>
+</head>
+<body>
+<div class="page-wrap" id="page_wrap">
+</div>
+<div class="loading" id="loading">加载中...</div>
+<script>
+    var animateClassName = '';
+    var __data = JSON.parse(window.localStorage.getItem('poster_data'));
+    var allImageData = [];
+    console.log('__data',__data);
+    var newPoster = (function () {
+        async function  render(data) {
+            // console.log('__render---',data);
+            var posterCmpt = data.programComponent[0];
+            var poster = posterCmpt.componentParam.poster;
+            var cHtml;
+            var posterHTMl = await getHTML(poster)
+            cHtml = format('<div  style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:{0};height:{1}px;width:{2}px;overflow: hidden;" id="preview-body">{3}</div>',
+                (posterCmpt.bgColor || 'none'), posterCmpt.h, posterCmpt.w, (posterHTMl || ''));
+            loadedImage(function(){
+                // console.log('loaded -- succ');
+                document.getElementById('page_wrap').innerHTML = cHtml;
+                setTimeout(function(){
+                    setZoom(document.getElementById('preview-body'), data);
+                    setTimeout(function(){
+                        $('#loading').hide();
+                        $('#page_wrap').addClass('animate-run');
+                    },100)
+                },150);
+
+
+                // setInterval(function(){
+                //     $('#page_wrap').removeClass('animate-run')
+                //     setTimeout(function(){
+                //         $('#page_wrap').addClass('animate-run');
+                //     },1000)
+                //
+                // },3000)
+            })
+        }
+
+        async function getHTML(data) {
+            var resHtml = '';
+            for (var i = 0, len = data.length; i < len; i++) {
+                var d = data[i];
+                switch (d.type) {
+                    case 'image':
+                        allImageData.push(d.content.url);
+                        resHtml += await getImageHTML(d);
+                        break;
+                    case 'text':
+                        resHtml += getTextHTML(d);
+                        break;
+                    case 'thirdPartyAnimate':
+                        resHtml += getAnimateHTML(d);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return resHtml;
+        }
+
+        async function getImageHTML(data) {
+            let url = await getImageUrl(data.content.url)
+            return format('<div class="{0} " data-src="{1}" style="{2}">' +
+                '<div class="{4}" style="width:100%;height:100%;-webkit-transform: rotate({3}deg);transform: rotate({3}deg);background:{5};overflow:hidden;{6}"><img class="type-img" data-src="{1}" src="{1}"/></div>' +
+                '</div>',
+                getClassName(data),
+                url,
+                getCss(data),
+                data.angle,
+                (data.opts.scaleType == 1 ? 'layer-fit-fill':'layer-fit-contain'),
+                (data.bgColor||'transparent'),
+                (data.opts.css&&data.opts.css['border-radius']) ? ('border-radius:'+data.opts.css['border-radius']+';'):'')
+        }
+
+        async function getImageUrl(url) {
+            return new Promise((resolve,reject)=>{
+                $.ajax({
+                    type: 'POST',
+                    url: DxConfig.api.base + 'storage/getQiniuUrl',
+                    data:JSON.stringify({key:url}),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    headers:{
+                        token:JSON.parse(window.localStorage.getItem('_lj_merchant_user')||'{}').token
+                    },
+                    success: function (result) {
+                        if (result.code == 0) {
+                            // 业务处理
+                            resolve(result.data)
+                        }
+                    },
+                    error: function () {
+                        // 网络异常处理
+                    }
+                });
+            })
+        }
+
+        function getTextHTML(data) {
+            return format('<div class="{0}" style="{1}"><div style="width:100%;height:100%;white-space:pre-wrap;-webkit-transform: rotate({3}deg);transform: rotate({3}deg);background:{4};">{2}</div></div>',
+                getClassName(data), getCss(data), data.content.text || '',data.angle,data.opts.css.background||'transparent')
+        }
+
+        function getAnimateHTML(data) {
+            var animateHtml = '';
+            var src = '';
+            var params = {};
+            if(data.content.type == 'iframe'){
+                src = data.content.plugin.url;
+                if(data.content.plugin.config && data.content.plugin.config.length>0){
+                    data.content.plugin.config.forEach(d=>{
+                        params[d.code] = d.value;
+                    });
+                    src = src + '?' + genParams(params);
+                }
+                src = './'+src;
+                animateHtml = '<iframe src="'+src+'" style="width:100%;height:100%;border:none;outline: none;overflow: hidden;box-sizing: border-box;" crossOrigin="anonymous" frameborder="0"></iframe>';
+            }else{
+                switch (data.content.code) {
+                    case 'yanwu':
+                        animateHtml = '<div class="itemYanWuImg1"></div><div class="itemYanWuImg2"></div>';
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return format('<div class="{0}" style="{1}"><div style="width:100%;height:100%;white-space:pre-wrap;-webkit-transform: rotate({3}deg);transform: rotate({3}deg);background:{4};">{2}</div></div>',
+                getClassName(data), getCss(data), animateHtml,data.angle,data.opts.css.background||'transparent')
+
+            // return format('<div class="{0} " data-src="{1}" style="{2}">{3}</div>',
+            //     getClassName(data), data.content.name, getCss(data), animateHtml);
+        }
+
+        function notName(name){
+            return ['background','overflow'].indexOf(name) == -1;
+        }
+        function getCss(data) {
+            var res = 'position:absolute;', cssData = data.opts.css, name, cssValue;
+            res += format('top:{0}px;left:{1}px;width:{2}px;height:{3}px;z-index:{4};',
+                data.y, data.x, data.w, data.h, data.level);
+            for (name in cssData) {
+                if (name != 'background-image') {
+                    if (cssData[name]) {
+                        cssValue = cssData[name];
+                        if (name == 'font-size') {
+                            cssValue += 'px';
+                        } else if (name == 'letter-spacing') {
+                            cssValue += 'px';
+                        } else if (name == 'opacity') {
+                            cssValue = cssValue>1?cssValue / 100:cssValue;
+                        } else if(name =='overflow'){
+
+                        }
+                        if(cssValue){
+                            if(notName(name)){
+                                res += format('{0}:{1};', name, (cssValue + '').replace(/\"/g, "'"));
+                            }
+                        }
+                    }
+                }
+            }
+            if (data.opts&&data.opts.animation&&data.opts.animation.type) {
+                res += format('animation-duration: {0}s;animation-delay: {1}s;animation-iteration-count: {2};',
+                    data.opts.animation.duration || 0, data.opts.animation.delay || 0, data.opts.animation.count == 0 ? 'infinite' : (data.opts.animation.count || 0));
+            }
+            return res;
+        }
+
+        function getClassName(data) {
+            switch (data.type) {
+                case 'text':
+                case 'image':
+                    return format(' {0} animated  ', data.opts.animation.type);
+                case 'animate':
+
+                    break;
+                default:
+                    break;
+            }
+            return '';
+        }
+        function setZoom(el, data) {
+            var windowHeight = $(window).height();
+            var windowWidth = $(window).width();
+            var width = data.canvasWidth;
+            var height = data.canvasHeight;
+            var zoom = 1;
+            if (width / windowWidth > height / windowHeight) {
+                zoom = windowWidth / width;
+            } else {
+                zoom = windowHeight / height;
+            }
+            el.style.zoom = zoom;
+        }
+
+        function loadedImage(callbackFn){
+            var total = allImageData.length;
+            var succ = 0;
+            if(total == 0){
+                callbackFn();
+            }
+            for(var i =0;i<total;i++){
+                (function(url){
+                    var _img = new Image();
+                    _img.src = url;
+                    if(_img.complete){
+                        succ++;
+                        if (succ == total) {
+                            callbackFn();
+                        }
+                    }else{
+                        _img.onload = function () {
+                            succ++;
+                            if (succ == total) {
+                                callbackFn();
+                            }
+                        };
+                        _img.onerror = function () {
+                            succ++;
+                            if (succ == total) {
+                                callbackFn();
+                            }
+                        }
+                    }
+                })(allImageData[i])
+            }
+        }
+        return {
+            init: function (data) {
+                render(data);
+            }
+        }
+    })();
+
+    function format() {
+        ///	<summary>
+        ///	字符串格式化。第一个参数是格式，第二个参数是格式化的第一个参数，第三个参数是格式化的第二个参数...
+        /// var fmt = "Hello {0}!";Swao.utils.String.format(fmt, "Andrew");
+        ///	</summary>
+        ///	<param name="str" type="String">输入字符串</param>
+        ///	<returns type="int">字符串长度(中文2个字符)</returns>
+
+        if (arguments.length == 0)
+            return null;
+        var str = arguments[0];
+        var re = '', i = 0;
+
+        function isArray(value) {
+            if (typeof Array.isArray === "function") {
+                return Array.isArray(value);
+            } else {
+                return Object.prototype.toString.call(value) === "[object Array]";
+            }
+        }
+
+        // 如果第二个参数是数组
+        if (isArray(arguments[1])) {
+            var array = arguments[1];
+            for (; i < array.length; i++) {
+                re = new RegExp('\\{' + i + '\\}', 'gm');
+                str = (str + '').replace(re, array[i]);
+            }
+        } else {
+            for (i = 1; i < arguments.length; i++) {
+                re = new RegExp('\\{' + (i - 1) + '\\}', 'gm');
+                str = (str + '').replace(re, arguments[i]);
+            }
+        }
+        return str;
+    }
+
+    function genParams(data) {
+        if (typeof data != 'object') {
+            return '';
+        }
+        var result = '';
+        for (var key in data) {
+            result += key + '=' + data[key] + '&';
+        }
+        return result.slice(0, result.length - 1);
+    }
+
+    newPoster.init(__data.data);
+</script>
+</body>
+</html>

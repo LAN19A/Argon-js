@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>点秀.海报</title>
+    <script type="text/javascript">
+        var ua = navigator.userAgent;
+        if (/Android (\d+\.\d+)/.test(ua)) {
+            <!-- 需要在页面加载时候 生效 才能有效 -->
+            var devicePixelRatio = window.devicePixelRatio;
+            var deviceScale = 1 / devicePixelRatio;
+            document.write('<meta name="viewport" content="width=device-width,initial-scale=' + deviceScale + ',minimum-scale=' + deviceScale + ',maximum-scale=' + deviceScale + ',user-scalable=no">');
+        }
+    </script>
+    <link rel="stylesheet" href="./css/main.css"/>
+    <link rel="stylesheet" href="./css/animate.css"/>
+    <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="./js/main.js"></script>
+</head>
+<body>
+<div class="page-wrap" id="page_wrap"></div>
+<script>
+    var animateClassName = '';
+    var __data = JSON.parse(window.localStorage.getItem('poster_data'));
+    newPoster.init(__data.data);
+</script>
+</body>
+</html>

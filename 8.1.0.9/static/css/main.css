@@ -1,0 +1,156 @@
+body, div, img, h2, p, ul, li, span {
+    margin: 0;
+    padding: 0;
+}
+
+ul, li {
+    list-style: none;
+}
+
+.page-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTc0OEY3MjAyNTM5MTFFNUE5NDdCMDVEMkI3NDBGODkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTc0OEY3MjEyNTM5MTFFNUE5NDdCMDVEMkI3NDBGODkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5NzQ0QjA3OTI1MzkxMUU1QTk0N0IwNUQyQjc0MEY4OSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5NzQ0QjA3QTI1MzkxMUU1QTk0N0IwNUQyQjc0MEY4OSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PiDKw74AAAAGUExURf///8zMzDjqqoMAAAAcSURBVHjaYmBEAwzoYFTBiFIwGi6jCpAAQIABACRcAgEMGSNiAAAAAElFTkSuQmCC);
+    background-repeat: repeat;
+    background-size: 16px 16px;
+}
+
+.poster-1920 {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+}
+.poster-1080 {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+}
+
+.itemYanWuImg1 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -25%;
+    left: -80%;
+    /*transform: matrix(1.08, 0, 0, 1.35, 633, -127);*/
+    transform-origin: 60% 90%;
+    z-index: 40;
+    background-repeat: no-repeat;
+    background-size: contain !important;
+    background-position: 50% 50%;
+    background-image: url(../images/yanwu.png);
+    opacity: 0.05;
+    pointer-events: none;
+    animation-name: transform_itemYanWuImg1;
+    -webkit-animation-name: transform_itemYanWuImg1;
+    -moz-animation-name: transform_itemYanWuImg1;
+    animation-delay: 0.9934s;
+    -webkit-animation-delay: 0.9934s;
+    -moz-animation-delay: 0.9934s;
+    animation-duration: 4.5301s;
+    -webkit-animation-duration: 4.5301s;
+    -moz-animation-duration: 4.5301s;
+    animation-fill-mode: both;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    margin-left: 0;
+    margin-top: 0;
+    animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+}
+
+.itemYanWuImg2 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -20%;
+    left: -80%;
+    /*transform: matrix(0.84, 0, 0, 1.05, 645, -73);*/
+    transform-origin: 60% 90%;
+    z-index: 40;
+    background-repeat: no-repeat;
+    background-size: contain !important;
+    background-position: 50% 50%;
+    background-image: url(../images/yanwu.png);
+    opacity: 0.05;
+    pointer-events: none;
+    animation-name: transform_itemYanWuImg2;
+    -webkit-animation-name: transform_itemYanWuImg2;
+    -moz-animation-name: transform_itemYanWuImg2;
+    animation-delay: 2.8853s;
+    -webkit-animation-delay: 2.8853s;
+    -moz-animation-delay: 2.8853s;
+    animation-duration: 4.5301s;
+    -webkit-animation-duration: 4.5301s;
+    -moz-animation-duration: 4.5301s;
+    animation-fill-mode: both;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    margin-left: 0;
+    margin-top: 0;
+    animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@keyframes transform_itemYanWuImg1 {
+    0% {
+        transform: translate3d(73.69%, -7px, 0px) scale3d(0.45, 0, 1);
+        animation-timing-function: linear;
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(73.69%, -15.32%, 0px) scale3d(1.08, 1.35, 1);
+        animation-timing-function: linear;
+        opacity: 0.05;
+    }
+}
+
+@keyframes transform_itemYanWuImg2 {
+    0% {
+        transform: translate3d(75.4%, 0.057%, 0px) scale3d(0.35, 0, 1);
+        animation-timing-function: linear;
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(75%, -0.088%, 0px) scale3d(0.84, 1.05, 1);
+        animation-timing-function: linear;
+        opacity: 0.05;
+    }
+}
+
+.loading{
+    position: fixed;
+    display: flex;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    overflow: hidden;
+    background: rgba(0,0,0,.6);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    color:#fff;
+}
+
+.layer-fit-fill img,.layer-fit-fill video{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.layer-fit-contain img,.layer-fit-contain video{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
